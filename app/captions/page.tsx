@@ -17,9 +17,9 @@ type CaptionRow = {
   id: string
   content: string | null
   created_datetime_utc: string | null
-  images: {
-    url: string | null
-  }[]
+images: {
+  url: string | null
+} | null
 }
 export default async function CaptionsPage({
   searchParams,
