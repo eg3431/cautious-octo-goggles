@@ -4,16 +4,23 @@ import VoteButtons from "./vote_buttons"
 
 
 const PAGE_SIZE = 20
-
+//
+// type CaptionRow = {
+//   id: string
+//   content: string | null
+//   created_datetime_utc: string | null
+//   images: {
+//     url: string | null
+//   } | null
+// }
 type CaptionRow = {
   id: string
   content: string | null
   created_datetime_utc: string | null
   images: {
     url: string | null
-  } | null
+  }[]
 }
-
 export default async function CaptionsPage({
   searchParams,
 }: {
