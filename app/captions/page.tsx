@@ -63,9 +63,15 @@ export default async function CaptionsPage({
   if (error) {
     return <div>{error.message}</div>
   }
-
-  const captions =
-    data as CaptionRow[]
+const captions =
+  (data ?? []).map((row: any) => ({
+    ...row,
+    images: Array.isArray(row.images)
+      ? row.images[0] ?? null
+      : row.images ?? null
+  })) as CaptionRow[]
+//   const captions =
+//     data as CaptionRow[]
 
   const totalPages =
     Math.ceil((count ?? 0) / PAGE_SIZE)
