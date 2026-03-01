@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 export default function LoginForm() {
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') || '/images'
+  const redirect = searchParams.get('redirect') || '/'
   const [loading, setLoading] = useState(false)
   
   const supabase = createBrowserClient(
