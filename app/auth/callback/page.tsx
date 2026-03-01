@@ -17,7 +17,11 @@ export default function Callback() {
       // 🔥 CRITICAL: exchanges ?code= for session cookie
       await supabase.auth.exchangeCodeForSession(window.location.href)
 
-      router.replace('/images')
+      // Get redirect URL from sessionStorage, fallback to /images
+      const redirect = sessionStorage.getItem('authRedirect') || '/images'
+      sessionStorage.removeItem('authRedirect')
+      
+      router.replace(redirect)
     }
 
     finish()

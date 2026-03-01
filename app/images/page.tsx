@@ -1,5 +1,7 @@
-import { supabase } from "@/lib/supabaseClient";
-import { redirect } from "next/navigation";
+import { createServerClient } from "@supabase/ssr"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+import LogoutButton from "@/app/components/LogoutButton"
 
 const PAGE_SIZE = 20;
 
@@ -21,6 +23,30 @@ export default async function ImagesPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
+  const cookieStore = await cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          // Note: Can't set cookies in server components directly
+        },
+        remove(name: string, options: any) {
+          // Note: Can't remove cookies in server components directly
+        },
+      },
+    }
+  )
+
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    redirect("/login?redirect=/images")
+  }
+
   const params = await searchParams;
 
   // redirect /images → page 1
@@ -76,9 +102,12 @@ export default async function ImagesPage({
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-xl font-bold mb-6">
-        Images (page {page} / {totalPages || 1})
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold">
+          Images (page {page} / {totalPages || 1})
+        </h1>
+        <LogoutButton />
+      </div>
 
       <table className="w-full border border-gray-700 text-sm text-gray-200">
         <thead className="bg-gray-800 text-white">

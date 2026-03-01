@@ -39,6 +39,8 @@ async function vote(value: number) {
         vote_value: value,
         created_datetime_utc: now,
         modified_datetime_utc: now
+      }, {
+        onConflict: 'caption_id,profile_id'
       })
 
   if (error)
