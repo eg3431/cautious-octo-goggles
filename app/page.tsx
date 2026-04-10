@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user)
+      setUser(session?.user ?? null)
       setLoading(false)
 
       const onboardingSeen = localStorage.getItem('caption-love-onboarding-seen')

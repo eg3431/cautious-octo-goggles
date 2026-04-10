@@ -51,7 +51,7 @@ export default function VoteButtons({
             created_datetime_utc: now,
             modified_datetime_utc: now,
           },
-          { onConflict: ['caption_id', 'profile_id'] }
+          { onConflict: 'caption_id,profile_id' }
         )
 
       if (error) throw error
