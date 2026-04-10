@@ -8,7 +8,7 @@ export default function Login() {
       <div className="fixed top-0 left-0 text-6xl opacity-20 pointer-events-none">🌸</div>
       <div className="fixed bottom-0 right-0 text-6xl opacity-20 pointer-events-none">✦</div>
 
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="text-purple-800 font-bold">Loading login...</div>}>
         <LoginForm />
       </Suspense>
     </main>

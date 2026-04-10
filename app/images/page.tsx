@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 import LogoutButton from "@/app/components/LogoutButton"
 
@@ -32,10 +33,10 @@ export default async function ImagesPage({
         get(name: string) {
           return cookieStore.get(name)?.value
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: Record<string, unknown>) {
           // Note: Can't set cookies in server components directly
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: Record<string, unknown>) {
           // Note: Can't remove cookies in server components directly
         },
       },
@@ -101,28 +102,28 @@ export default async function ImagesPage({
     d ? new Date(d).toLocaleString() : "";
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-rose-100 via-purple-100 to-blue-100 p-8">
+    <main className="min-h-screen bg-gradient-to-br from-rose-100 via-purple-100 to-blue-100 p-4 md:p-8 pb-28 md:pb-8">
       {/* Decorative elements */}
       <div className="fixed top-0 left-0 text-6xl opacity-20 pointer-events-none">🌸</div>
       <div className="fixed bottom-0 right-0 text-6xl opacity-20 pointer-events-none">✦</div>
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex flex-col gap-4 md:flex-row justify-between md:items-center mb-8 md:mb-12">
           <div className="text-center flex-1">
             <h1 className="text-5xl font-black text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-indigo-600 bg-clip-text mb-2">
               ♡ Image Gallery ♡
             </h1>
-            <p className="text-lg text-purple-800 font-bold tracking-widest">~ browse all images ~</p>
-            <p className="text-sm text-purple-700 mt-1">すべての画像を見る</p>
+            <p className="text-lg text-purple-800 font-bold tracking-widest">Browse uploaded images and context</p>
+            <p className="text-sm text-purple-700 mt-1">Find images, then head to voting to rate generated captions.</p>
           </div>
-          <div className="flex gap-3">
-            <a
+          <div className="flex gap-3 justify-center">
+            <Link
               href="/"
               className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-black rounded-full shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-indigo-700 text-sm"
             >
-              ♡ HOME
-            </a>
+              Home
+            </Link>
             <LogoutButton />
           </div>
         </div>
@@ -211,7 +212,7 @@ export default async function ImagesPage({
               href={`/images?page=${page - 1}`}
               className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black rounded-full shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-200 border-2 border-indigo-700 text-lg"
             >
-              ← PREV
+              ← Prev
             </a>
           ) : (
             <div />
@@ -229,7 +230,7 @@ export default async function ImagesPage({
               href={`/images?page=${page + 1}`}
               className="px-8 py-4 bg-gradient-to-r from-purple-500 to-rose-500 text-white font-black rounded-full shadow-lg hover:shadow-2xl transform hover:scale-110 transition-all duration-200 border-2 border-rose-700 text-lg"
             >
-              NEXT →
+              Next →
             </a>
           ) : (
             <div />
@@ -240,6 +241,28 @@ export default async function ImagesPage({
         <div className="text-center mt-12 space-y-2">
           <p className="text-purple-800 font-bold text-lg">~ 画像を見る ~</p>
           <p className="text-purple-700 text-sm">Explore all uploaded images...</p>
+        </div>
+
+        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white/95 border-t-2 border-purple-300 p-3">
+          <div className="max-w-7xl mx-auto grid grid-cols-3 gap-2">
+            {page > 1 ? (
+              <a href={`/images?page=${page - 1}`} className="text-center py-2 rounded-full bg-indigo-600 text-white font-bold text-sm">
+                Prev
+              </a>
+            ) : (
+              <div className="py-2" />
+            )}
+            <Link href="/" className="text-center py-2 rounded-full bg-slate-700 text-white font-bold text-sm">
+              Home
+            </Link>
+            {page < totalPages ? (
+              <a href={`/images?page=${page + 1}`} className="text-center py-2 rounded-full bg-rose-600 text-white font-bold text-sm">
+                Next
+              </a>
+            ) : (
+              <div className="py-2" />
+            )}
+          </div>
         </div>
       </div>
     </main>

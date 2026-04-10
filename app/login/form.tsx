@@ -8,6 +8,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,15 +17,21 @@ export default function LoginForm() {
 
   const handleLogin = async () => {
     setLoading(true)
+    setError(null)
     // Store redirect URL in sessionStorage for callback to retrieve
     sessionStorage.setItem('authRedirect', redirect)
-    
-    await supabase.auth.signInWithOAuth({
+
+    const { error: signInError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
+
+    if (signInError) {
+      setError(signInError.message)
+      setLoading(false)
+    }
   }
 
   return (
@@ -47,7 +54,12 @@ export default function LoginForm() {
           Welcome
         </h1>
         <p className="text-center text-lg text-purple-700 font-bold mb-2">♡ キャプション ♡</p>
-        <p className="text-center text-sm text-purple-600 mb-8">~ log in to start rating ~</p>
+        <p className="text-center text-sm text-purple-600 mb-8">Sign in to rate AI-generated captions</p>
+
+        <div className="mb-6 rounded-xl border border-indigo-300 bg-indigo-50 p-3 text-sm text-indigo-900">
+          <p className="font-semibold">After sign-in you will go to: {redirect}</p>
+          <p className="mt-1">On mobile, use Google autofill/keychain for faster login.</p>
+        </div>
 
         {/* Decorative divider */}
         <p className="text-center text-sm text-purple-600 font-bold mb-8">━━━━━✦━━━━━</p>
@@ -58,12 +70,20 @@ export default function LoginForm() {
           disabled={loading}
           className="w-full bg-gradient-to-br from-rose-400 via-rose-500 to-red-500 hover:from-rose-500 hover:via-rose-600 hover:to-red-600 disabled:from-gray-400 disabled:via-gray-400 disabled:to-gray-400 text-white font-black py-4 rounded-full text-lg shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-rose-700 disabled:border-gray-500 mb-6"
         >
-          {loading ? '⏳ Connecting...' : '✦ Sign In with Google'}
+          {loading ? '⏳ Connecting to Google...' : '✦ Continue with Google'}
         </button>
+
+        {error && (
+          <div className="mb-6 rounded-xl border-2 border-red-400 bg-red-50 p-3 text-sm text-red-800">
+            <p className="font-bold">Sign-in failed</p>
+            <p>{error}</p>
+            <p className="mt-1">Please try again. If the pop-up was blocked, allow it and retry.</p>
+          </div>
+        )}
 
         {/* Info */}
         <div className="text-center space-y-3">
-          <p className="text-sm text-purple-700 font-semibold">~ Secure login powered by Google ~</p>
+          <p className="text-sm text-purple-700 font-semibold">Secure login powered by Google OAuth</p>
           <div className="flex justify-center gap-2 text-2xl">
             <span>♡</span>
             <span>✦</span>
