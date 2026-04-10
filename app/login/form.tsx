@@ -57,7 +57,7 @@ export default function LoginForm() {
         <p className="text-center text-sm text-purple-600 mb-8">Sign in to rate AI-generated captions</p>
 
         <div className="mb-6 rounded-xl border border-indigo-300 bg-indigo-50 p-3 text-sm text-indigo-900">
-          <p className="font-semibold">After sign-in you will go to: {redirect}</p>
+          <p className="font-semibold">After sign-in you will go to the home page.</p>
           <p className="mt-1">On mobile, use Google autofill/keychain for faster login.</p>
         </div>
 
